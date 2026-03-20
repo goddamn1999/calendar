@@ -322,13 +322,92 @@ footer a:hover { text-decoration: underline; }
 }
 
 @media (max-width: 600px) {
-    header h1 { font-size: 1.8rem; }
-    .calendar-wrapper { padding: 15px; }
-    .weekdays, .calendar { gap: 5px; }
-    .weekday { font-size: 0.8rem; padding: 5px; }
-    .day { min-height: 60px; padding: 4px; }
-    .day-number { font-size: 0.9rem; }
-    .day-lunar { font-size: 0.6rem; }
-    .legend { gap: 10px; }
-    .legend-item { font-size: 0.75rem; }
+    body { padding: 10px; }
+    header { margin-bottom: 15px; }
+    header h1 { font-size: 1.5rem; margin-bottom: 5px; }
+    .subtitle { font-size: 0.9rem; }
+    
+    .calendar-wrapper { 
+        padding: 12px; 
+        border-radius: 15px;
+    }
+    
+    .calendar-header { margin-bottom: 12px; }
+    .nav-btn { 
+        width: 36px; 
+        height: 36px; 
+        font-size: 1rem;
+    }
+    #yearMonth { font-size: 1.3rem; }
+    .lunar-year { font-size: 0.75rem; }
+    
+    .today-btn-wrapper { margin-bottom: 10px; }
+    .today-btn { 
+        padding: 6px 16px; 
+        font-size: 0.85rem;
+    }
+    
+    .weekdays, .calendar { gap: 4px; }
+    .weekday { 
+        font-size: 0.75rem; 
+        padding: 4px 2px;
+    }
+    
+    .day { 
+        aspect-ratio: auto;
+        min-height: 52px;
+        height: 52px;
+        padding: 3px 2px;
+        border-radius: 8px;
+    }
+    
+    .day-number { 
+        font-size: 0.85rem;
+        line-height: 1.2;
+    }
+    
+    .day-lunar { 
+        font-size: 0.6rem;
+        margin-top: 1px;
+        line-height: 1.1;
+    }
+    
+    .day-workday::after {
+        font-size: 0.5rem;
+        padding: 0 2px;
+        top: 1px;
+        right: 1px;
+    }
+    
+    .legend { 
+        gap: 8px; 
+        padding: 10px;
+        margin-top: 15px;
+    }
+    .legend-item { 
+        font-size: 0.7rem;
+        gap: 4px;
+    }
+    .dot {
+        width: 10px;
+        height: 10px;
+    }
+    
+    footer { 
+        margin-top: 20px; 
+        font-size: 0.8rem;
+    }
+    .update-time { font-size: 0.7rem; }
+    
+    .modal-content {
+        margin: 20% auto;
+        padding: 20px;
+        width: 95%;
+    }
+    .modal-date { font-size: 1.1rem; }
+    .close {
+        font-size: 24px;
+        right: 10px;
+        top: 10px;
+    }
 }
