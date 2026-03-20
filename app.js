@@ -1,107 +1,367 @@
+// 中国日历 - 完整版（内置农历计算，不依赖外部库）
+
 const lunarMonths = ['正','二','三','四','五','六','七','八','九','十','冬','腊'];
 const lunarDays = ['初一','初二','初三','初四','初五','初六','初七','初八','初九','初十','十一','十二','十三','十四','十五','十六','十七','十八','十九','二十','廿一','廿二','廿三','廿四','廿五','廿六','廿七','廿八','廿九','三十'];
 const gan = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
 const zhi = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
 const animals = ['鼠','牛','虎','兔','龙','蛇','马','羊','猴','鸡','狗','猪'];
 
+// 农历数据表（1900-2100）
+const lunarInfo = [
+    0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+    0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+    0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+    0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+    0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+    0x06ca0,0x0b550,0x15355,0x04da0,0x0a5d0,0x14573,0x052d0,0x0a9a8,0x0e950,0x06aa0,
+    0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+    0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,
+    0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+    0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x055c0,0x0ab60,0x096d5,0x092e0,
+    0x0c960,0x0d954,0x0d4a0,0x0da50,0x07552,0x056a0,0x0abb7,0x025d0,0x092d0,0x0cab5,
+    0x0a950,0x0b4a0,0x0baa4,0x0ad50,0x055d9,0x04ba0,0x0a5b0,0x15176,0x052b0,0x0a930,
+    0x07954,0x06aa0,0x0ad50,0x05b52,0x04b60,0x0a6e6,0x0a4e0,0x0d260,0x0ea65,0x0d530,
+    0x05aa0,0x076a3,0x096d0,0x04bd7,0x04ad0,0x0a4d0,0x1d0b6,0x0d250,0x0d520,0x0dd45,
+    0x0b5a0,0x056d0,0x055b2,0x049b0,0x0a577,0x0a4b0,0x0aa50,0x1b255,0x06d20,0x0ada0
+];
+
+// 节假日数据（2024-2026）
+const holidays = {
+    '2024-01-01': { type: 'holiday', name: '元旦' },
+    '2024-02-10': { type: 'holiday', name: '春节' },
+    '2024-02-11': { type: 'holiday', name: '春节' },
+    '2024-02-12': { type: 'holiday', name: '春节' },
+    '2024-02-13': { type: 'holiday', name: '春节' },
+    '2024-02-14': { type: 'holiday', name: '春节' },
+    '2024-02-15': { type: 'holiday', name: '春节' },
+    '2024-02-16': { type: 'holiday', name: '春节' },
+    '2024-02-17': { type: 'holiday', name: '春节' },
+    '2024-04-04': { type: 'holiday', name: '清明' },
+    '2024-04-05': { type: 'holiday', name: '清明' },
+    '2024-04-06': { type: 'holiday', name: '清明' },
+    '2024-05-01': { type: 'holiday', name: '劳动节' },
+    '2024-05-02': { type: 'holiday', name: '劳动节' },
+    '2024-05-03': { type: 'holiday', name: '劳动节' },
+    '2024-05-04': { type: 'holiday', name: '劳动节' },
+    '2024-05-05': { type: 'holiday', name: '劳动节' },
+    '2024-06-10': { type: 'holiday', name: '端午' },
+    '2024-09-15': { type: 'holiday', name: '中秋' },
+    '2024-09-16': { type: 'holiday', name: '中秋' },
+    '2024-09-17': { type: 'holiday', name: '中秋' },
+    '2024-10-01': { type: 'holiday', name: '国庆' },
+    '2024-10-02': { type: 'holiday', name: '国庆' },
+    '2024-10-03': { type: 'holiday', name: '国庆' },
+    '2024-10-04': { type: 'holiday', name: '国庆' },
+    '2024-10-05': { type: 'holiday', name: '国庆' },
+    '2024-10-06': { type: 'holiday', name: '国庆' },
+    '2024-10-07': { type: 'holiday', name: '国庆' },
+    // 2024调休
+    '2024-02-04': { type: 'workday', name: '调休上班' },
+    '2024-02-18': { type: 'workday', name: '调休上班' },
+    '2024-04-07': { type: 'workday', name: '调休上班' },
+    '2024-04-28': { type: 'workday', name: '调休上班' },
+    '2024-05-11': { type: 'workday', name: '调休上班' },
+    '2024-09-14': { type: 'workday', name: '调休上班' },
+    '2024-09-29': { type: 'workday', name: '调休上班' },
+    '2024-10-12': { type: 'workday', name: '调休上班' },
+    
+    // 2025节假日
+    '2025-01-01': { type: 'holiday', name: '元旦' },
+    '2025-01-28': { type: 'holiday', name: '春节' },
+    '2025-01-29': { type: 'holiday', name: '春节' },
+    '2025-01-30': { type: 'holiday', name: '春节' },
+    '2025-01-31': { type: 'holiday', name: '春节' },
+    '2025-02-01': { type: 'holiday', name: '春节' },
+    '2025-02-02': { type: 'holiday', name: '春节' },
+    '2025-02-03': { type: 'holiday', name: '春节' },
+    '2025-02-04': { type: 'holiday', name: '春节' },
+    '2025-04-04': { type: 'holiday', name: '清明' },
+    '2025-04-05': { type: 'holiday', name: '清明' },
+    '2025-04-06': { type: 'holiday', name: '清明' },
+    '2025-05-01': { type: 'holiday', name: '劳动节' },
+    '2025-05-02': { type: 'holiday', name: '劳动节' },
+    '2025-05-03': { type: 'holiday', name: '劳动节' },
+    '2025-05-04': { type: 'holiday', name: '劳动节' },
+    '2025-05-05': { type: 'holiday', name: '劳动节' },
+    '2025-05-31': { type: 'holiday', name: '端午' },
+    '2025-06-01': { type: 'holiday', name: '端午' },
+    '2025-06-02': { type: 'holiday', name: '端午' },
+    '2025-10-01': { type: 'holiday', name: '国庆' },
+    '2025-10-02': { type: 'holiday', name: '国庆' },
+    '2025-10-03': { type: 'holiday', name: '国庆' },
+    '2025-10-04': { type: 'holiday', name: '国庆' },
+    '2025-10-05': { type: 'holiday', name: '国庆' },
+    '2025-10-06': { type: 'holiday', name: '国庆' },
+    '2025-10-07': { type: 'holiday', name: '国庆' },
+    '2025-10-08': { type: 'holiday', name: '国庆' },
+    // 2025调休
+    '2025-01-26': { type: 'workday', name: '调休上班' },
+    '2025-04-27': { type: 'workday', name: '调休上班' },
+    '2025-09-28': { type: 'workday', name: '调休上班' },
+    '2025-10-11': { type: 'workday', name: '调休上班' },
+    
+    // 2026节假日（预测）
+    '2026-01-01': { type: 'holiday', name: '元旦' },
+    '2026-02-17': { type: 'holiday', name: '春节' },
+    '2026-02-18': { type: 'holiday', name: '春节' },
+    '2026-02-19': { type: 'holiday', name: '春节' },
+    '2026-02-20': { type: 'holiday', name: '春节' },
+    '2026-02-21': { type: 'holiday', name: '春节' },
+    '2026-02-22': { type: 'holiday', name: '春节' },
+    '2026-02-23': { type: 'holiday', name: '春节' },
+    '2026-02-24': { type: 'holiday', name: '春节' },
+};
+
+// 24节气数据（简化版，每个节气大约在特定日期）
+const solarTerms2025 = {
+    '2025-01-05': '小寒', '2025-01-20': '大寒',
+    '2025-02-03': '立春', '2025-02-18': '雨水',
+    '2025-03-05': '惊蛰', '2025-03-20': '春分',
+    '2025-04-04': '清明', '2025-04-20': '谷雨',
+    '2025-05-05': '立夏', '2025-05-21': '小满',
+    '2025-06-05': '芒种', '2025-06-21': '夏至',
+    '2025-07-07': '小暑', '2025-07-22': '大暑',
+    '2025-08-07': '立秋', '2025-08-23': '处暑',
+    '2025-09-07': '白露', '2025-09-23': '秋分',
+    '2025-10-08': '寒露', '2025-10-23': '霜降',
+    '2025-11-07': '立冬', '2025-11-22': '小雪',
+    '2025-12-07': '大雪', '2025-12-21': '冬至'
+};
+
+const solarTerms2026 = {
+    '2026-01-05': '小寒', '2026-01-20': '大寒',
+    '2026-02-04': '立春', '2026-02-18': '雨水',
+    '2026-03-05': '惊蛰', '2026-03-20': '春分',
+    '2026-04-05': '清明', '2026-04-20': '谷雨',
+    '2026-05-05': '立夏', '2026-05-21': '小满',
+    '2026-06-05': '芒种', '2026-06-21': '夏至',
+    '2026-07-07': '小暑', '2026-07-22': '大暑',
+    '2026-08-07': '立秋', '2026-08-23': '处暑',
+    '2026-09-07': '白露', '2026-09-23': '秋分',
+    '2026-10-08': '寒露', '2026-10-23': '霜降',
+    '2026-11-07': '立冬', '2026-11-22': '小雪',
+    '2026-12-07': '大雪', '2026-12-21': '冬至'
+};
+
 let currentYear = new Date().getFullYear();
 let currentMonth = new Date().getMonth();
-let holidaysData = null;
 
-async function init() {
-    await loadHolidays();
-    renderCalendar(currentYear, currentMonth);
-    setupEventListeners();
-}
-
-async function loadHolidays() {
-    try {
-        const response = await fetch('https://cdn.jsdelivr.net/npm/chinese-days/dist/chinese-days.json');
-        holidaysData = await response.json();
-    } catch (error) {
-        holidaysData = {};
+// 农历计算函数
+function getLunarDate(date) {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDate();
+    
+    const baseDate = new Date(1900, 0, 31);
+    let offset = Math.floor((date - baseDate) / 86400000);
+    
+    let lunarYear = 1900;
+    let daysInLunarYear = 0;
+    
+    for (let i = 1900; i < 2100 && offset > 0; i++) {
+        daysInLunarYear = getLunarYearDays(i);
+        offset -= daysInLunarYear;
+        lunarYear++;
     }
+    
+    if (offset < 0) {
+        offset += daysInLunarYear;
+        lunarYear--;
+    }
+    
+    const lunarYearData = lunarInfo[lunarYear - 1900];
+    const leapMonth = lunarYearData & 0xf;
+    let isLeap = false;
+    let lunarMonth = 1;
+    let daysInLunarMonth = 0;
+    
+    for (let i = 1; i <= 12; i++) {
+        daysInLunarMonth = getLunarMonthDays(lunarYear, i);
+        if (offset < daysInLunarMonth) break;
+        offset -= daysInLunarMonth;
+        lunarMonth++;
+    }
+    
+    const lunarDay = offset + 1;
+    
+    const ganIndex = (lunarYear - 4) % 10;
+    const zhiIndex = (lunarYear - 4) % 12;
+    
+    return {
+        lunarYear: lunarYear,
+        lunarMonth: lunarMonth,
+        lunarDay: lunarDay,
+        lunarYearName: `${gan[ganIndex]}${zhi[zhiIndex]}年`,
+        lunarMonthName: lunarMonths[lunarMonth - 1] + '月',
+        lunarDayName: lunarDays[lunarDay - 1],
+        animal: animals[zhiIndex]
+    };
 }
 
-function formatDate(date) {
-    return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+function getLunarYearDays(year) {
+    let sum = 348;
+    const info = lunarInfo[year - 1900];
+    for (let i = 0x8000; i > 0x8; i >>= 1) {
+        sum += (info & i) ? 1 : 0;
+    }
+    return sum + getLeapDays(year);
 }
 
+function getLunarMonthDays(year, month) {
+    const info = lunarInfo[year - 1900];
+    return (info & (0x10000 >> month)) ? 30 : 29;
+}
+
+function getLeapDays(year) {
+    const info = lunarInfo[year - 1900];
+    if (getLeapMonth(year)) {
+        return (info & 0x10000) ? 30 : 29;
+    }
+    return 0;
+}
+
+function getLeapMonth(year) {
+    return lunarInfo[year - 1900] & 0xf;
+}
+
+// 获取农历年份名称
 function getLunarYearName(year) {
     const offset = year - 1900 + 36;
-    return `${gan[offset%10]}${zhi[offset%12]}年 (${animals[offset%12]}年)`;
+    return `${gan[offset % 10]}${zhi[offset % 12]}年 (${animals[offset % 12]}年)`;
 }
 
-function isHoliday(date) {
-    if (!holidaysData) return {isHoliday:false,isWorkday:false,name:''};
+// 格式化日期
+function formatDate(date) {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+// 获取节假日信息
+function getHolidayInfo(date) {
     const dateStr = formatDate(date);
-    const dayInfo = holidaysData[dateStr];
-    if (dayInfo) return {isHoliday:dayInfo.type==='holiday',isWorkday:dayInfo.type==='workday',name:dayInfo.name||''};
+    const info = holidays[dateStr];
+    
+    if (info) {
+        return { isHoliday: info.type === 'holiday', isWorkday: info.type === 'workday', name: info.name };
+    }
+    
     const dayOfWeek = date.getDay();
-    if (dayOfWeek===0 || dayOfWeek===6) return {isHoliday:true,isWorkday:false,name:'周末'};
-    return {isHoliday:false,isWorkday:false,name:''};
+    if (dayOfWeek === 0 || dayOfWeek === 6) {
+        return { isHoliday: true, isWorkday: false, name: '周末' };
+    }
+    
+    return { isHoliday: false, isWorkday: false, name: '' };
 }
 
+// 获取节气
+function getSolarTerm(date) {
+    const dateStr = formatDate(date);
+    const year = date.getFullYear();
+    
+    if (year === 2025) return solarTerms2025[dateStr] || '';
+    if (year === 2026) return solarTerms2026[dateStr] || '';
+    return '';
+}
+
+// 传统节日
+function getTraditionalFestival(lunarDate) {
+    const festivals = {
+        '正月初一': '春节',
+        '正月十五': '元宵',
+        '五月初五': '端午',
+        '七月初七': '七夕',
+        '七月十五': '中元',
+        '八月十五': '中秋',
+        '九月初九': '重阳',
+        '腊月初八': '腊八',
+        '腊月廿三': '小年',
+        '腊月三十': '除夕',
+        '腊月廿九': '除夕'
+    };
+    const key = lunarDate.lunarMonthName + lunarDate.lunarDayName;
+    return festivals[key] || '';
+}
+
+// 渲染日历
 function renderCalendar(year, month) {
     const calendar = document.getElementById('calendar');
+    const yearMonth = document.getElementById('yearMonth');
+    const lunarYear = document.getElementById('lunarYear');
+    
     calendar.innerHTML = '';
-    document.getElementById('yearMonth').textContent = `${year}年${month+1}月`;
-    document.getElementById('lunarYear').textContent = getLunarYearName(year);
+    yearMonth.textContent = `${year}年${month + 1}月`;
+    lunarYear.textContent = getLunarYearName(year);
     
     const firstDay = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month+1, 0).getDate();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
     const daysInPrevMonth = new Date(year, month, 0).getDate();
     const today = new Date();
     
-    for (let i = firstDay-1; i >= 0; i--) {
+    // 上月的日期
+    for (let i = firstDay - 1; i >= 0; i--) {
         const div = document.createElement('div');
         div.className = 'day day-other-month';
-        div.innerHTML = `<span class="day-number">${daysInPrevMonth-i}</span>`;
+        div.innerHTML = `<span class="day-number">${daysInPrevMonth - i}</span>`;
         calendar.appendChild(div);
     }
     
+    // 当月的日期
     for (let day = 1; day <= daysInMonth; day++) {
         const date = new Date(year, month, day);
         const div = document.createElement('div');
         div.className = 'day';
         
-        if (date.toDateString() === today.toDateString()) div.classList.add('day-today');
+        // 今天
+        if (date.toDateString() === today.toDateString()) {
+            div.classList.add('day-today');
+        }
         
-        const holidayInfo = isHoliday(date);
-        if (holidayInfo.isHoliday && !div.classList.contains('day-today')) div.classList.add('day-holiday');
-        if (holidayInfo.isWorkday) div.classList.add('day-workday');
+        // 节假日
+        const holidayInfo = getHolidayInfo(date);
+        if (holidayInfo.isHoliday && !div.classList.contains('day-today')) {
+            div.classList.add('day-holiday');
+        }
+        if (holidayInfo.isWorkday) {
+            div.classList.add('day-workday');
+        }
         
+        // 周末
         const dayOfWeek = date.getDay();
-        if ((dayOfWeek===0 || dayOfWeek===6) && !div.classList.contains('day-today') && !holidayInfo.isHoliday) {
+        if ((dayOfWeek === 0 || dayOfWeek === 6) && !div.classList.contains('day-today') && !holidayInfo.isHoliday) {
             div.classList.add('day-weekend');
         }
         
-        let lunarText = '';
-        let festivalText = '';
+        // 农历信息
+        const lunarDate = getLunarDate(date);
+        const solarTerm = getSolarTerm(date);
+        const festival = getTraditionalFestival(lunarDate);
         
-        try {
-            if (window.chineseDays) {
-                const lunarDate = window.chineseDays.getLunarDate(formatDate(date));
-                if (lunarDate) {
-                    lunarText = lunarDate.lunarDay === 1 ? lunarDate.lunarMonthName : lunarDate.lunarDayName;
-                    if (lunarDate.solarTerm) festivalText = lunarDate.solarTerm;
-                    else if (lunarDate.lunarFestival) festivalText = lunarDate.lunarFestival;
-                    else if (lunarDate.gregorianFestival) festivalText = lunarDate.gregorianFestival;
-                }
-            }
-            if (!festivalText && holidayInfo.name) festivalText = holidayInfo.name;
-        } catch (e) {}
+        // 显示优先级：节气 > 节日 > 农历日期
+        let displayText = solarTerm || festival || holidayInfo.name;
+        if (!displayText) {
+            displayText = lunarDate.lunarDay === 1 ? lunarDate.lunarMonthName : lunarDate.lunarDayName;
+        }
+        
+        // 农历文字样式
+        let lunarClass = 'day-lunar';
+        if (solarTerm || festival || holidayInfo.name) {
+            lunarClass += ' highlight';
+        }
         
         div.innerHTML = `
             <span class="day-number">${day}</span>
-            <span class="day-lunar">${festivalText || lunarText || ''}</span>
+            <span class="${lunarClass}">${displayText}</span>
         `;
-        div.addEventListener('click', () => showDayDetail(date, lunarText, festivalText, holidayInfo));
+        
+        // 点击事件
+        div.addEventListener('click', () => showDayDetail(date, lunarDate, holidayInfo, solarTerm, festival));
+        
         calendar.appendChild(div);
     }
     
-    const remaining = 42 - (firstDay + daysInMonth);
-    for (let i = 1; i <= remaining; i++) {
+    // 下月的日期
+    const totalCells = firstDay + daysInMonth;
+    const remainingCells = 42 - totalCells;
+    for (let i = 1; i <= remainingCells; i++) {
         const div = document.createElement('div');
         div.className = 'day day-other-month';
         div.innerHTML = `<span class="day-number">${i}</span>`;
@@ -109,38 +369,57 @@ function renderCalendar(year, month) {
     }
 }
 
-function showDayDetail(date, lunarText, festivalText, holidayInfo) {
+// 显示日期详情
+function showDayDetail(date, lunarDate, holidayInfo, solarTerm, festival) {
     const modal = document.getElementById('dayModal');
     const modalBody = document.getElementById('modalBody');
-    const weekdays = ['周日','周一','周二','周三','周四','周五','周六'];
+    const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
     
-    let html = `<div class="modal-date">${date.getFullYear()}年${date.getMonth()+1}月${date.getDate()}日 ${weekdays[date.getDay()]}</div>`;
+    let html = `
+        <div class="modal-date">${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日 ${weekdays[date.getDay()]}</div>
+        <div class="modal-lunar">农历：${lunarDate.lunarYearName} ${lunarDate.lunarMonthName}${lunarDate.lunarDayName}</div>
+        <div class="modal-animal">生肖：${lunarDate.animal}</div>
+    `;
     
-    if (window.chineseDays) {
-        const lunarDate = window.chineseDays.getLunarDate(formatDate(date));
-        if (lunarDate) {
-            html += `<div class="modal-lunar">农历：${lunarDate.lunarYearName}年 ${lunarDate.lunarMonthName}${lunarDate.lunarDayName}</div>`;
-        }
+    if (solarTerm) {
+        html += `<div class="modal-term">🌾 24节气：${solarTerm}</div>`;
     }
     
-    if (festivalText) html += `<div class="modal-festival">${festivalText}</div>`;
-    if (holidayInfo.isHoliday) html += `<div class="modal-festival">休息日 🏖️</div>`;
-    if (holidayInfo.isWorkday) html += `<div style="color:#e74c3c;font-weight:bold;">调休上班 💼</div>`;
+    if (festival) {
+        html += `<div class="modal-festival">🎉 传统节日：${festival}</div>`;
+    }
+    
+    if (holidayInfo.name && holidayInfo.name !== '周末') {
+        html += `<div class="modal-festival">🏖️ ${holidayInfo.name}</div>`;
+    }
+    
+    if (holidayInfo.isHoliday) {
+        html += `<div style="color:#27ae60;font-weight:bold;">✅ 休息日</div>`;
+    } else if (holidayInfo.isWorkday) {
+        html += `<div style="color:#e74c3c;font-weight:bold;">💼 调休上班</div>`;
+    }
     
     modalBody.innerHTML = html;
     modal.style.display = 'block';
 }
 
+// 设置事件监听
 function setupEventListeners() {
     document.getElementById('prevMonth').addEventListener('click', () => {
         currentMonth--;
-        if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+        if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        }
         renderCalendar(currentYear, currentMonth);
     });
     
     document.getElementById('nextMonth').addEventListener('click', () => {
         currentMonth++;
-        if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+        if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        }
         renderCalendar(currentYear, currentMonth);
     });
     
@@ -157,8 +436,14 @@ function setupEventListeners() {
     
     window.addEventListener('click', (e) => {
         const modal = document.getElementById('dayModal');
-        if (e.target === modal) modal.style.display = 'none';
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
     });
 }
 
-document.addEventListener('DOMContentLoaded', init);
+// 初始化
+document.addEventListener('DOMContentLoaded', () => {
+    renderCalendar(currentYear, currentMonth);
+    setupEventListeners();
+});

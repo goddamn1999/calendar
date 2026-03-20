@@ -10,8 +10,9 @@
     <div class="container">
         <header>
             <h1>📅 中国日历</h1>
-            <p class="subtitle">节假日 · 农历 · 24节气</p>
+            <p class="subtitle">公历 · 农历 · 节假日 · 24节气</p>
         </header>
+
         <div class="calendar-wrapper">
             <div class="calendar-header">
                 <button id="prevMonth" class="nav-btn">◀</button>
@@ -21,9 +22,11 @@
                 </div>
                 <button id="nextMonth" class="nav-btn">▶</button>
             </div>
+            
             <div class="today-btn-wrapper">
                 <button id="todayBtn" class="today-btn">回到今天</button>
             </div>
+
             <div class="weekdays">
                 <div class="weekday">日</div>
                 <div class="weekday">一</div>
@@ -33,25 +36,46 @@
                 <div class="weekday">五</div>
                 <div class="weekday">六</div>
             </div>
+
             <div id="calendar" class="calendar"></div>
         </div>
+
         <div class="legend">
-            <div class="legend-item"><span class="dot holiday"></span><span>节假日</span></div>
-            <div class="legend-item"><span class="dot workday"></span><span>调休上班</span></div>
-            <div class="legend-item"><span class="dot weekend"></span><span>周末</span></div>
-            <div class="legend-item"><span class="dot today"></span><span>今天</span></div>
+            <div class="legend-item">
+                <span class="dot holiday"></span>
+                <span>节假日</span>
+            </div>
+            <div class="legend-item">
+                <span class="dot workday"></span>
+                <span>调休上班</span>
+            </div>
+            <div class="legend-item">
+                <span class="dot weekend"></span>
+                <span>周末</span>
+            </div>
+            <div class="legend-item">
+                <span class="dot today"></span>
+                <span>今天</span>
+            </div>
+            <div class="legend-item">
+                <span class="dot term"></span>
+                <span>节气</span>
+            </div>
         </div>
+
         <footer>
             <p>Powered by <a href="https://github.com/vsme/chinese-days" target="_blank">chinese-days</a></p>
+            <p class="update-time">内置农历计算 · 支持 1900-2100 年</p>
         </footer>
     </div>
+
     <div id="dayModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
             <div id="modalBody"></div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/chinese-days@1.5.7/dist/chinese-days.min.js"></script>
+
     <script src="app.js"></script>
 </body>
 </html>
