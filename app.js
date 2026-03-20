@@ -110,6 +110,40 @@ const holidays = {
     '2026-02-22': { type: 'holiday', name: '春节' },
     '2026-02-23': { type: 'holiday', name: '春节' },
     '2026-02-24': { type: 'holiday', name: '春节' },
+    // 2026劳动节
+    '2026-05-01': { type: 'holiday', name: '劳动节' },
+    '2026-05-02': { type: 'holiday', name: '劳动节' },
+    '2026-05-03': { type: 'holiday', name: '劳动节' },
+    '2026-05-04': { type: 'holiday', name: '劳动节' },
+    '2026-05-05': { type: 'holiday', name: '劳动节' },
+    // 2026清明
+    '2026-04-04': { type: 'holiday', name: '清明' },
+    '2026-04-05': { type: 'holiday', name: '清明' },
+    '2026-04-06': { type: 'holiday', name: '清明' },
+    // 2026端午
+    '2026-06-19': { type: 'holiday', name: '端午' },
+    '2026-06-20': { type: 'holiday', name: '端午' },
+    '2026-06-21': { type: 'holiday', name: '端午' },
+    // 2026中秋国庆
+    '2026-10-01': { type: 'holiday', name: '国庆' },
+    '2026-10-02': { type: 'holiday', name: '国庆' },
+    '2026-10-03': { type: 'holiday', name: '国庆' },
+    '2026-10-04': { type: 'holiday', name: '国庆' },
+    '2026-10-05': { type: 'holiday', name: '国庆' },
+    '2026-10-06': { type: 'holiday', name: '国庆' },
+    '2026-10-07': { type: 'holiday', name: '国庆' },
+    '2026-10-08': { type: 'holiday', name: '国庆' },
+    '2026-09-25': { type: 'holiday', name: '中秋' },
+    '2026-09-26': { type: 'holiday', name: '中秋' },
+    '2026-09-27': { type: 'holiday', name: '中秋' },
+    // 2026调休
+    '2026-02-15': { type: 'workday', name: '调休上班' },
+    '2026-02-28': { type: 'workday', name: '调休上班' },
+    '2026-04-11': { type: 'workday', name: '调休上班' },
+    '2026-05-09': { type: 'workday', name: '调休上班' },
+    '2026-06-13': { type: 'workday', name: '调休上班' },
+    '2026-09-20': { type: 'workday', name: '调休上班' },
+    '2026-10-10': { type: 'workday', name: '调休上班' },
 };
 
 // 24节气数据（简化版，每个节气大约在特定日期）
